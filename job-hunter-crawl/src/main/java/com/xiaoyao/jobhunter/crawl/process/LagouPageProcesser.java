@@ -267,6 +267,7 @@ public class LagouPageProcesser extends BasePageProcesser {
 
 	public static void main(String[] args) {
 		LagouPageProcesser pageProcesser = new LagouPageProcesser();
+		pageProcesser.websiteInfoConf.setUseProxy(true);
 		// List<String> testLinsk =new ArrayList<>() ;
 		// testLinsk.add("http://www.lagou.com/jobs/positionAjax.json?px=new&city=常州&needAddtionalResult=false")
 		// ;

@@ -41,14 +41,14 @@ public class BasePageProcesser implements PageProcessor {
 	List<ClassifyInfoConf> classifyInfoConfs = null;
 
 	String regexUrl = null;
-	private Site site;
+	protected Site site;
 	/////////////////////////////
 	/////////////////////////////
-	BasePipeline  basePipeline = new BaseJsonPipeline(); // 解析器
-	MyCacheDownload downloader = new MyCacheDownload();// 下载器
+	protected BasePipeline  basePipeline = new BaseJsonPipeline(); // 解析器
+	protected MyCacheDownload downloader = new MyCacheDownload();// 下载器
 
-	Scheduler scheduler =new FileCacheQueueScheduler(X.URL_CACHE_PATH) ;// URL管理
-//	Scheduler scheduler =new RedisScheduler("127.0.0.1") ;// URL管理,分布式抓取
+	protected Scheduler scheduler =new FileCacheQueueScheduler(X.URL_CACHE_PATH) ;// URL管理
+//	protected Scheduler scheduler =new RedisScheduler("127.0.0.1") ;// URL管理,分布式抓取
 	
 	public BasePageProcesser(String id) {
 		this.id = id;

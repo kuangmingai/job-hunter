@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mongodb.DBObject;
 import com.xiaoyao.jobhunter.commons.constant.X;
+import com.xiaoyao.jobhunter.crawl.util.Map2Object;
 import com.xiaoyao.jobhunter.model.CompanyInfo;
 import com.xiaoyao.jobhunter.model.JobDetail;
 import com.xiaoyao.jobhunter.mongo.dao.BaseDao;
@@ -37,10 +38,15 @@ public class BaseJsonPipeline extends  BasePipeline   {
 		// String site = metaInfo.getSite().getDomain() ;
 		logger.info("解析" +url+":" +  fieldsMap);
 		String datatype = (String) fieldsMap.get(X.KEY_datatype);
-
 		if (X.DATATYPE_COMPANY.equals(datatype)) {
-		} else if (X.DATATYPE_JOBDETAIL.equals(datatype)) {
-		} else if (X.DATATYPE_COMPANY_JOBDETAIL.equals(datatype)) {
+			CompanyInfo companyInfo = Map2Object.convertCompanyInfo(fieldsMap);
+			logger.info("companyInfo:"+companyInfo);
+			saveCompanyInfo(companyInfo);
+		}else if (X.DATATYPE_JOBDETAIL.equals(datatype)) {
+			JobDetail  jobDetail =Map2Object.convertJobDetail(fieldsMap);
+			logger.info("jobdetail:"+jobDetail);
+			saveJobDetail(jobDetail);
+		}   else if (X.DATATYPE_COMPANY_JOBDETAIL.equals(datatype)) {
 			List<JobDetail> jobDetails = (List<JobDetail>) fieldsMap.get(X.KEY_jobdetail_list);
 			List<CompanyInfo> companyInfos = (List<CompanyInfo>) fieldsMap.get(X.KEY_company_list);
 			logger.info("jobDetails:" + jobDetails);
