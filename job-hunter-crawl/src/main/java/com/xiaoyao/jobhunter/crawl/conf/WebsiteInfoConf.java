@@ -17,6 +17,10 @@ public class WebsiteInfoConf {
 	private String  id;
 	private String  name;
 	private boolean  useProxy= false || X.ISDEBUG; //是否使用代理,默认false
+	private int retryTimes=3; //重试次数 
+	private int  intervalSleepMs=1000;//抓取间隔
+	
+	
 	private String  parseType; //xml , json
 	private int  thread;
 	private String  domain;
@@ -36,6 +40,15 @@ public class WebsiteInfoConf {
 	}
 	public void setUseProxy(boolean useProxy) {
 		this.useProxy = useProxy;
+	}
+	public int getIntervalSleepMs() {
+		return intervalSleepMs;
+	}public int getRetryTimes() {
+		return retryTimes;
+	}public void setIntervalSleepMs(int intervalSleepMs) {
+		this.intervalSleepMs = intervalSleepMs;
+	}public void setRetryTimes(int retryTimes) {
+		this.retryTimes = retryTimes;
 	}
 	public int getThread() {
 		return thread;

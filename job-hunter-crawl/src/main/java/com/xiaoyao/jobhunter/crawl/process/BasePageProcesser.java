@@ -56,7 +56,9 @@ public class BasePageProcesser implements PageProcessor {
 			websiteInfoConf = ConfigureUtil.getWebsiteInfoConfById(id);
 			classifyInfoConfs = websiteInfoConf.getClassifyInfoConfs();
 
-			site = new MySite().setDomain(websiteInfoConf.getDomain());
+			site = new MySite().setDomain(websiteInfoConf.getDomain())
+					.setRetryTimes(websiteInfoConf.getRetryTimes()).setSleepTime(websiteInfoConf.getIntervalSleepMs());
+			
 			helpUrls = websiteInfoConf.getHelpUrls();
 //			downloader.setThread(websiteInfoConf.getThread());
 			downloader.setHelpUrls(helpUrls);
