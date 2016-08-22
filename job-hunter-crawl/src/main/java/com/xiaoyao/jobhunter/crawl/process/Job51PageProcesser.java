@@ -158,7 +158,7 @@ id="kuai2"  行业
 
 	public static void main(String[] args) {
 		Job51PageProcesser job51PageProcesser = new Job51PageProcesser();
-		job51PageProcesser.websiteInfoConf.setUseProxy(false);
+		job51PageProcesser.websiteInfoConf.setUseProxy(true);
 //		List<String> testLinsk =new ArrayList<>() ;
 //		testLinsk.add("http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=200500&industrytype=13") ;
 //		job51PageProcesser.setTestLinks(testLinsk);

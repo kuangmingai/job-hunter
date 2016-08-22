@@ -37,14 +37,14 @@ public class ProxyValidator extends BaseService {
 ////		 valiteWebsites.add("http://www.baidu.com"); // 百度用代理可能不能访问
 //		 valiteWebsites.add("http://www.qq.com");
 //		 valiteWebsites.add("http://www.163.com");
-//		 valiteWebsites.add("http://www.sina.com.cn");
+		 valiteWebsites.add("http://www.sina.com.cn");
 //		 valiteWebsites.add("http://www.sohu.com/");
 //		 valiteWebsites.add("http://www.taobao.com");
 //		 valiteWebsites.add("http://www.58.com");
 //		 valiteWebsites.add("http://www.ctrip.com");
 //		 valiteWebsites.add("http://www.ifeng.com");
 //		valiteWebsites.add("http://www.qqxxbd.com/testip.jsp");
-		valiteWebsites.add("http://www.lagou.com");
+//		valiteWebsites.add("http://www.lagou.com");
 	}
 
 	static {

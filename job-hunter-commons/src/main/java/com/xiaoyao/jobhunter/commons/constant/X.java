@@ -10,7 +10,7 @@ package com.xiaoyao.jobhunter.commons.constant;
 public class X {
 	
 	//
-	public static   boolean ISDEBUG=true; //是否测试
+	public static final  boolean ISDEBUG=true; //是否测试
 	
 	// 数据类型
 	public static final String DATATYPE_COMPANY = "company";
