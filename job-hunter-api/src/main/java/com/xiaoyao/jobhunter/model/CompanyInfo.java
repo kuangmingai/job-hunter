@@ -122,7 +122,6 @@ public class CompanyInfo implements Serializable {
 		this.companyNature = companyNature;
 	}
 
-	@Override
 	public String toString() {
 		return "CompanyInfo [websiteId=" + websiteId + ", url=" + url + ", priId=" + priId + ", companyName=" + companyName
 				+ ", description=" + description + ", companyNature=" + companyNature + ", companySize=" + companySize + ", website="

@@ -31,7 +31,7 @@ public class ProxyValidator extends BaseService {
 	private static final int CONNECT_TIMEOUT = 5000;
 	private static final int MAX_CON_MS = 5000; // 最长链接时间.
 	private static final String userAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
-	private static final List<String> valiteWebsites = new ArrayList<>();
+	private static final List<String> valiteWebsites = new ArrayList<String>();
 
 	public static void init() {
 ////		 valiteWebsites.add("http://www.baidu.com"); // 百度用代理可能不能访问

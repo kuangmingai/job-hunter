@@ -25,7 +25,7 @@ import com.xiaoyao.jobhunter.commons.util.FileUtil;
 public class ConfigureUtil {
 static Logger logger =LoggerFactory.getLogger(ConfigureUtil.class) ;
 	public static final String FILE_CONF = "jd-conf.xml";
-	private static Map<String,WebsiteInfoConf> websiteInfoConfMap=new HashMap<>();
+	private static Map<String,WebsiteInfoConf> websiteInfoConfMap=new HashMap<String,WebsiteInfoConf>();
 	
 	/**
 	 * 根据ID获取配置.
@@ -67,7 +67,7 @@ static Logger logger =LoggerFactory.getLogger(ConfigureUtil.class) ;
 			String domain = websiteEle.elementTextTrim("domain");
 
 			List<Node> helpUrlNodeList = websiteEle.element("helpUrls").selectNodes("helpUrl");
-			List<String> helpUrls = new ArrayList<>();
+			List<String> helpUrls = new ArrayList<String>();
 			if (CollectionUtils.isNotEmpty(helpUrlNodeList)) {
 				for (Node node : helpUrlNodeList) {
 					helpUrls.add(node.getText().trim());
@@ -76,13 +76,13 @@ static Logger logger =LoggerFactory.getLogger(ConfigureUtil.class) ;
 
 			// 不能为空
 			List<Node> entryUrlNodeList = websiteEle.element("entryUrls").selectNodes("entryUrl");
-			List<String> entryUrls = new ArrayList<>();
+			List<String> entryUrls = new ArrayList<String>();
 			for (Node node : entryUrlNodeList) {
 				entryUrls.add(node.getText().trim() );
 			}
 
 			// 不能为空
-			List<ClassifyInfoConf> classifyInfoConfs = new ArrayList<>();
+			List<ClassifyInfoConf> classifyInfoConfs = new ArrayList<ClassifyInfoConf>();
 			List<Node> classifyNodeList = websiteEle.element("classifys").selectNodes("classify");
 			int classifySize = classifyNodeList.size() ;
 			for (int i = 0; i < classifySize ; i++) {
@@ -94,7 +94,7 @@ static Logger logger =LoggerFactory.getLogger(ConfigureUtil.class) ;
 				
 				List<Node> fieldNodeList = classifyEle.elements("field");
 				int fieldSize = fieldNodeList.size() ;
-				List<FieldConf> fieldConfs = new ArrayList<>();
+				List<FieldConf> fieldConfs = new ArrayList<FieldConf>();
 				for (int j = 0; j < fieldSize  ; j++) {
 					Element fieldEle = (Element) fieldNodeList.get(j) ;
 					String fieldName =  fieldEle.attributeValue("name") ;

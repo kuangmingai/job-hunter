@@ -13,9 +13,11 @@ import org.apache.commons.lang.StringUtils;
 import com.xiaoyao.jobhunter.crawl.conf.ClassifyInfoConf;
 import com.xiaoyao.jobhunter.crawl.conf.FieldConf;
 import com.xiaoyao.jobhunter.crawl.pipeline.BasePipeline;
-import com.xiaoyao.jobhunter.crawl.pipeline.BaseXmlPipeline;
+import com.xiaoyao.jobhunter.crawl.pipeline.Job51Pipeline;
 
 import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.selector.Selectable;
+import us.codecraft.webmagic.selector.Xpath2Selector;
 /**
  * 
  * 
@@ -47,8 +49,22 @@ id="kuai2"  行业
 
  */
 	public static final String id = "51job";
-	public static Set<String> cityList = new HashSet<>();
-	public static Set<String> industryList = new HashSet<>();
+	public static Set<String> cityList = new HashSet<String>();
+	public static Set<String> industryList = new HashSet<String>();
+	public static Set<String> itList = new HashSet<String>();
+	
+	static{
+		itList.add("01");
+		itList.add("37");
+		itList.add("38");
+		itList.add("31");
+		itList.add("39");
+		itList.add("32");
+		itList.add("02");
+		itList.add("40");
+		itList.add("35");
+	}
+	
 	static String cityRegex = "<a href=\"http://search.51job.com/list/(\\d{6}),000000,0000,00,1,99,%2B,0,1.html\\?lang=";
 	static String industryRegex = "<td><a href=\"javascript:void\\(0\\);\" onclick=\"zzSearch.getIndtypeUrl\\('(\\d{2,4})'\\)\">.{1,20}</a></td>";
 	static Pattern cityPattern = Pattern.compile(cityRegex);
@@ -64,7 +80,6 @@ id="kuai2"  行业
 	static String KEY_INDUSTRY="&industrytype=" ;
 	static String KEY_PAGE="&curr_page=" ;
 		
-	@Override
 	public void process(Page page) {
 		String url = page.getRequest().getUrl();
 //		logger.info(" 当前网页url ----> " + url);
@@ -83,6 +98,8 @@ id="kuai2"  行业
 			while (industryMatcher.find()) {
 				industryList.add(industryMatcher.group(1));
 			}
+			industryList=itList; /// IT,互联网
+			
 			logger.info("行业:" + cityList);
 			for(String city:cityList){
 				for(String industry:industryList){
@@ -121,45 +138,51 @@ id="kuai2"  行业
 					///////////////////////////////////////////
 					List<FieldConf> fieldConfs  = classifyInfoConf.getFieldConfs() ;
 					for (FieldConf fieldConf:fieldConfs ) {
-						String replaceRegex=fieldConf.getReplaceRegex() ;
-						String replacement =fieldConf.getReplacement() ;
-						String value =page.getHtml().xpath(fieldConf.getFieldRegex()).toString();
-						if (StringUtils.isNotBlank( replaceRegex)) {
-							value = value.replaceAll(replaceRegex, replacement);
-						} 
-						page.putField(fieldConf.getName()  ,value );
+						String replaceRegex = fieldConf.getReplaceRegex();
+						String replacement = fieldConf.getReplacement();
+						Xpath2Selector xpath2Selector=new Xpath2Selector(fieldConf.getFieldRegex());
+ 						Selectable selectable = page.getHtml().select(xpath2Selector);//.xpath(fieldConf.getFieldRegex());
+//						logger.info(fieldConf.getFieldRegex());
+						if (selectable != null) {
+							String value = selectable.toString();
+//							logger.info(value);
+							if (StringUtils.isNotBlank(value) && StringUtils.isNotBlank(replaceRegex)) {
+								value = value.replaceAll(replaceRegex, replacement);
+							}
+							page.putField(fieldConf.getName(), value);
+						}
 					}
 					break;
 				}
-			} 
-
+			}  
 		}
 		 
 		if (CollectionUtils.isNotEmpty(testLinsk)) {
 			page.addTargetRequests(testLinsk); 
 		}else{		
 			// #锚点重复URL处理
-			Set<String> linkSet =new HashSet<>();
+			Set<String> linkSet =new HashSet<String>();
 			for (String link:links) {
 				if (link!=null) {
 					linkSet.add(link.replaceFirst("#.*", ""));
 				}
 			}
-			links= new ArrayList<>(  linkSet );
+			links= new ArrayList<String>(  linkSet );
 	
 			page.addTargetRequests(links);
 		}
 	}
 
-	BasePipeline  basePipeline = new BaseXmlPipeline(); // 解析器
+	BasePipeline  basePipeline = new Job51Pipeline(); // 解析器
 	public Job51PageProcesser() { 
 		super(id);
 	}
 
 	public static void main(String[] args) {
 		Job51PageProcesser job51PageProcesser = new Job51PageProcesser();
-		job51PageProcesser.websiteInfoConf.setUseProxy(true);
+		job51PageProcesser.websiteInfoConf.setUseProxy( true);
 //		List<String> testLinsk =new ArrayList<>() ;
+//		testLinsk.add("http://jobs.51job.com/chongqing-spbq/78723441.html") ;
 //		testLinsk.add("http://search.51job.com/jobsearch/search_result.php?fromJs=1&jobarea=200500&industrytype=13") ;
 //		job51PageProcesser.setTestLinks(testLinsk);
 //		job51PageProcesser.setHelpUrls(job51PageProcesser.getHelpUrls());

@@ -24,7 +24,7 @@ public class JobProxyManager {
 	protected static ProxyInfoDao proxyInfoDao = new ProxyInfoDao();
 
 	public static List<HttpHost> readtHttpProxy() {
-		List<HttpHost> hosts = new ArrayList<>();
+		List<HttpHost> hosts = new ArrayList<HttpHost>();
 		HttpHost httpProxy = null;
 
 		List<BasicDBObject> proxyInfos = proxyInfoDao.getAll();
@@ -40,7 +40,7 @@ public class JobProxyManager {
 
 	public static List<String[]> getProxyPool() {
 		List<HttpHost> hosts = readtHttpProxy();
-		List<String[]> proxyHostPool = new ArrayList<>();
+		List<String[]> proxyHostPool = new ArrayList<String[]>();
 
 		for (HttpHost httpProxy : hosts) {
 			String[] proxyArr = new String[] { httpProxy.getHostName(), httpProxy.getPort() + "" };

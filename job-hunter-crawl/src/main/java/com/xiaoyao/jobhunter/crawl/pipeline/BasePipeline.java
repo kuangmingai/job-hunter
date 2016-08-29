@@ -2,9 +2,15 @@ package com.xiaoyao.jobhunter.crawl.pipeline;
 
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import us.codecraft.webmagic.ResultItems;
+import us.codecraft.webmagic.Task;
+import us.codecraft.webmagic.pipeline.Pipeline;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -12,11 +18,6 @@ import com.xiaoyao.jobhunter.model.CompanyInfo;
 import com.xiaoyao.jobhunter.model.JobDetail;
 import com.xiaoyao.jobhunter.mongo.dao.BaseDao;
 import com.xiaoyao.jobhunter.mongo.pojo.MyBasicObject;
-
-import net.sf.json.JSONObject;
-import us.codecraft.webmagic.ResultItems;
-import us.codecraft.webmagic.Task;
-import us.codecraft.webmagic.pipeline.Pipeline;
 
 /**
  *  数据解析 保存基类
@@ -29,7 +30,6 @@ public class BasePipeline implements Pipeline {
 
 	static Logger logger = LoggerFactory.getLogger(BasePipeline.class);
 
-	@Override
 	public void process(ResultItems resultItems, Task metaInfo) {
 	}
 

@@ -44,7 +44,7 @@ public class ClassifyInfoConf {
 
 	public List<FieldConf> getFieldConfs() {
 		if (fieldConfs == null) {
-			fieldConfs = new ArrayList<>();
+			fieldConfs = new ArrayList<FieldConf>();
 		}
 		return fieldConfs;
 	}

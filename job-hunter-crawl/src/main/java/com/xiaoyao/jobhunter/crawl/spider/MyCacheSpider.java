@@ -11,7 +11,7 @@ public class MyCacheSpider extends Spider {
 	public MyCacheSpider(PageProcessor pageProcessor) {
 		super(pageProcessor);
 	}
-
+ 
     protected void processRequest(Request request) {
         Page page = downloader.download(request, this);
         if (page == null) {

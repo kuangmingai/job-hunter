@@ -43,10 +43,10 @@ public class LagouPageProcesser extends BasePageProcesser {
 	public static final String KEY_XUELI = "&xl=";// 学历key
 	public static final String KEY_PAGE = "&pn=";// 分页key
 
-	public static final List<String> hangyeList = new ArrayList<>();
-	public static final List<String> rongziList = new ArrayList<>();
-	public static final List<String> gzjyList = new ArrayList<>();
-	public static final List<String> xueliList = new ArrayList<>();
+	public static final List<String> hangyeList = new ArrayList<String>();
+	public static final List<String> rongziList = new ArrayList<String>();
+	public static final List<String> gzjyList = new ArrayList<String>();
+	public static final List<String> xueliList = new ArrayList<String>();
 	static {
 		hangyeList.add("移动互联网");
 		hangyeList.add("电子商务");
@@ -62,11 +62,11 @@ public class LagouPageProcesser extends BasePageProcesser {
 		hangyeList.add("医疗健康");
 		hangyeList.add("生活服务");
 		hangyeList.add("信息安全");
-		hangyeList.add("数据服务");
-		hangyeList.add("广告营销");
-		hangyeList.add("分类信息");
-		hangyeList.add("招聘");
-		hangyeList.add("其他");
+//		hangyeList.add("数据服务");
+//		hangyeList.add("广告营销");
+//		hangyeList.add("分类信息");
+//		hangyeList.add("招聘");
+//		hangyeList.add("其他");
 
 		//
 		rongziList.add("未融资");
@@ -98,18 +98,21 @@ public class LagouPageProcesser extends BasePageProcesser {
 
 	BasePipeline  basePipeline = new BaseJsonPipeline(); // 解析器
 	
-	static Set<String> hotCityList = new HashSet<>();
-	static Set<String> cityList = new HashSet<>();
-	static Set<String> keywordList = new HashSet<>();
+	static Set<String> hotCityList = new HashSet<String>();
+	static Set<String> cityList = new HashSet<String>();
+	static Set<String> keywordList = new HashSet<String>();
 	static String hotCityRegex = "<a rel=\"nofollow\" href=\"javascript:;\">([^\\{]+?)</a>";
 	static String cityRegex = "\"name\":\"(.+?)\"";
 	static String keywordRegex = "<a href=\"//www.lagou.com/zhaopin/.+?/\" data-lg-tj-id.+?class[^>]*?>([^>]+?)</a>";
 	static Pattern hotCityPattern = Pattern.compile(hotCityRegex);
 	static Pattern cityPattern = Pattern.compile(cityRegex);
 	static Pattern keywordPattern = Pattern.compile(keywordRegex);
-
+	static final int pageMinLength =3*1024;//2.34K 
+	static final String filterRegex ="您已被封禁，您的IP是";//您已被封禁，您的IP是
 	public LagouPageProcesser() {
 		super(id);
+		downloader.setPageMinLength(pageMinLength);
+		downloader.setFilterRegex(filterRegex);
 	}
 
 	/**
@@ -119,11 +122,7 @@ public class LagouPageProcesser extends BasePageProcesser {
 	 * @param url
 	 * @param websiteInfoConf
 	 */
-	private void parseLagouJson(String url, Page page, String json, WebsiteInfoConf websiteInfoConf) {
-		if (json.trim().indexOf("<!DOCTYPE") > -1) {
-			logger.warn("格式有问题,可能封IP了:" + json.contains("您已被封禁"));
-			return;
-		}
+	private List<String> parseLagouJson(String url, Page page, String json, WebsiteInfoConf websiteInfoConf) {
 		// if ... 各类网页的解析规则.
 		page.putField("url", url);
 		page.putField("websiteId", websiteInfoConf.getId());
@@ -134,6 +133,19 @@ public class LagouPageProcesser extends BasePageProcesser {
 
 		page.putField(X.KEY_jobdetail_list, jobDetails);
 		page.putField(X.KEY_company_list, companyInfos); 
+		
+		//  解析出详情页面
+		List<String> detailUrlList =new ArrayList<String>();
+		//  http://www.lagou.com/gongsi/749.html
+		// http://www.lagou.com/jobs/2182913.html  
+		for(JobDetail jobDetail :jobDetails){
+			detailUrlList.add("http://www.lagou.com/jobs/"+jobDetail.getPriId()+".html") ;
+		}
+		for(CompanyInfo companyInfo :companyInfos){
+			detailUrlList.add("http://www.lagou.com/gongsi/"+companyInfo.getPriId()+".html") ;
+		}
+		return detailUrlList  ;
+		
 	}
 
 	@Override
@@ -209,7 +221,7 @@ public class LagouPageProcesser extends BasePageProcesser {
 				if (!url.contains(KEY_PAGE)) { // 第一页 //json 
 					if (pageCount > PAGE_MAX && !url.contains(KEY_KEYWORD )) { // 关键词
 						for(String keyword:keywordList){
-							String ajaxUrl =url+ KEY_KEYWORD  + keyword;
+							String ajaxUrl =url+"&"+ KEY_KEYWORD  + keyword;
 							links.add(ajaxUrl); 
 						} 	
 					}else  if (pageCount > PAGE_MAX && !url.contains(KEY_CITY )) { // 城市
@@ -248,13 +260,16 @@ public class LagouPageProcesser extends BasePageProcesser {
 						} 
 					} 
 					// gj=应届毕业生&xl=本科
-					parseLagouJson(url, page, rawText, websiteInfoConf); // 解析
+					List<String> urls =parseLagouJson(url, page, rawText, websiteInfoConf); // 解析
+					links.addAll(urls) ;
 				} else { // 后面的页
-					parseLagouJson(url, page, rawText, websiteInfoConf); // 解析
+					List<String> urls =parseLagouJson(url, page, rawText, websiteInfoConf); // 解析
+					links.addAll(urls) ;
 				}
 			}
 		} else { // 后面的页//有暂停的情况
-			parseLagouJson(url, page, rawText, websiteInfoConf); // 解析
+			List<String> urls =parseLagouJson(url, page, rawText, websiteInfoConf); // 解析
+			links.addAll(urls) ;
 		}
 		if (CollectionUtils.isNotEmpty(testLinsk)) {
 			page.addTargetRequests(testLinsk);

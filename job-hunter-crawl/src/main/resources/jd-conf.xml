@@ -37,7 +37,7 @@
 	 
 	<website id="51job">
 		<name>前程无忧</name>
-		<thread description='线程数'>4</thread>
+		<thread description='线程数'>8</thread>
 		<description>前程无忧相关配置</description>
 		<domain>www.51job.com</domain>
 		<helpUrls description="辅助的链接,一般是列表页面,可以多个">
@@ -56,16 +56,58 @@
 		</entryUrls>
 		<classifys>
 			<!-- http://jobs.51job.com/all/co3405409.html -->
+			<!-- 
+	private String url;// 链接//json类型的可能不准确.
+	private String priId;// 站点主键ID
+	private String companyName; // 公司名
+	private String description; // 介绍 //有的可能不单独抓
+	private String companyNature; // 性质
+	private String companySize; // 规模
+	private String website; // 网站
+	private String industry; // 行业
+	private String address; // 地址
+			 -->
 			<classify datatype='company' className="">
 				<urlRegex>http://jobs.51job.com/all/\w+.html.*</urlRegex>
 				<field name='companyName'>//h1/text()</field>
 				<field name='description'>//div[@class='con_msg']/div[@class='in']/p/text()</field>
+				<field name='companyNature'  replaceRegex='' replacement="">//div[@class='tHeader tHCop']//p[@class=ltype]/text()</field>
+				<field name='companySize'  replaceRegex="&amp;nbsp;&amp;nbsp;.+" replacement="">//div[@class='tHeader tHCop']//p[@class=ltype]/text()</field>
+				<field name='industry'  replaceRegex=".+&amp;nbsp;&amp;nbsp;" replacement="">//div[@class='tHeader tHCop']//p[@class=ltype]/text()</field>
+				<field name='address'>//p[@class='fp']/text()</field>
 			</classify> 
 			<!-- http://jobs.51job.com/chongqing-spbq/78723441.html  -->
+			<!--  
+	private String priId;// 站点主键ID
+	private String title; // 标题
+	private String company; // 公司名
+	private String city;// 城市
+	private String salary;// 薪资
+	private String publishTime;// 发布时间
+	private String address;// 工作地点
+	private String workYears;// 工作经验
+	private String education;// 最低学历
+	private String peoples;// 招聘人数
+	private String jobType;// 职位类别
+	private String jobDescribe;// 职位描述
+	private String jobRequire;;// 职位要求//暂时不需要
+	private String tags; // 标签
+	private String keywords; // 关键词
+	 -->
 			<classify datatype='jobdetail'  className="">
 				<urlRegex>http://jobs.51job.com/.+?/\d+.html.*</urlRegex>
 				<field name='title'   replaceRegex=".职位编号.+" replacement="" >//h1/@title</field>
 				<field name='company'>//p[@class='cname']/a/@title</field>
+				<field name='city' >//div[@class='in']//span[@class="lname"]/text()</field>
+				<field name='salary' >//div[@class='in']//strong/text()</field>
+				<field name='workYears' >//div[@class="t1"]/span[@class='sp4']/em[@class='i1']/parent::span/text()</field>
+				<field name='education' >//div[@class="t1"]/span[@class='sp4']/em[@class='i2']/parent::span/text()</field>
+				<field name='peoples' >//div[@class="t1"]/span[@class='sp4']/em[@class='i3']/parent::span/text()</field>
+				<field name='publishTime' >//div[@class="t1"]/span[@class='sp4']/em[@class='i4']/parent::span/text()</field>
+				<field name='jobDescribe' >//div[@class="bmsg job_msg inbox"]/text()</field>
+				<field name='jobRequire' >//div[@class="bmsg job_msg inbox"]/text()</field>
+				<field name='jobType' >//div[@class="mt10"]/p[@class="fp f2"][1]/span[@class='e1'][1]/text()</field>
+				<field name='keywords' >//div[@class="mt10"]/p[@class="fp f2"][2]/span[@class='e1']/text()</field>
 			</classify>
 		</classifys>
 	</website>
@@ -74,7 +116,7 @@
 	
 	<website id="lagou">
 		<name>拉勾网</name>
-		<thread description='线程数'>4</thread>
+		<thread description='线程数'>2</thread>
 		<description>拉勾网相关配置</description>
 		<domain>www.lagou.com</domain>
 		<helpUrls description="辅助的链接,一般是列表页面,可以多个">

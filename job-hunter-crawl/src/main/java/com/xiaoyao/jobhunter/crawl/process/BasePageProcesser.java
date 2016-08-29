@@ -101,7 +101,7 @@ public class BasePageProcesser implements PageProcessor {
 	}
 	public List<String> getHelpUrls() {
 		if (helpUrls == null) {
-			helpUrls =new ArrayList<>() ;
+			helpUrls =new ArrayList<String>() ;
 		}
 		return helpUrls;
 	}
@@ -118,7 +118,6 @@ public class BasePageProcesser implements PageProcessor {
 		buffer.append(")") ;
 		regexUrl = buffer.toString();
 	}
-	@Override
 	public void process(Page page) {
 		String url = page.getRequest().getUrl();
 		logger.info( " 当前网页url ----> " + url);
@@ -140,13 +139,13 @@ public class BasePageProcesser implements PageProcessor {
 			page.addTargetRequests(testLinsk); 
 		}else{
 			// #锚点重复URL处理
-			Set<String> linkSet =new HashSet<>();
+			Set<String> linkSet =new HashSet<String>();
 			for (String link:links) {
 				if (link!=null) {
 					linkSet.add(link.replaceFirst("#.*", ""));
 				}
 			}
-			links= new ArrayList<>(  linkSet );
+			links= new ArrayList<String>(  linkSet );
 			page.addTargetRequests(links);
 		}
 //		logger.info("URL匹配规则");
@@ -176,7 +175,6 @@ public class BasePageProcesser implements PageProcessor {
 		} 
 	}
 
-	@Override
 	public Site getSite() {
 		return site;
 	}

@@ -24,7 +24,6 @@ public class BaseXmlPipeline    extends  BasePipeline   {
 
 	static Logger logger = LoggerFactory.getLogger(BaseXmlPipeline.class);
 
-	@Override
 	public void process(ResultItems resultItems, Task metaInfo) {
 		Map<String, Object > fieldsMap = (Map<String, Object>) resultItems.getAll() ;
 		String url =resultItems.getRequest().getUrl();

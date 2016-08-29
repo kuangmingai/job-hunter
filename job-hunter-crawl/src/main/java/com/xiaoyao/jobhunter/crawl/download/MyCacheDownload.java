@@ -37,7 +37,10 @@ public class MyCacheDownload extends HttpClientDownloader {
 	List<String> helpUrls = null;
 	String helpUrlRegex = null;
 	long cachedMs = 365*24*3600*1000;// 缓存时间 ,小于0为永久
-
+	
+	int pageMinLength =1*1024;
+	String filterRegex=null;//"您已被封禁，您的IP是";
+	
 	public void setHelpUrls(List<String> helpUrls) {
 		this.helpUrls = helpUrls;
 		if (CollectionUtils.isNotEmpty(helpUrls)) {
@@ -52,12 +55,11 @@ public class MyCacheDownload extends HttpClientDownloader {
 
 	public List<String> getHelpUrls() {
 		if (helpUrls == null) {
-			helpUrls = new ArrayList<>();
+			helpUrls = new ArrayList<String>();
 		}
 		return helpUrls;
 	}
 
-	@Override
 	protected String getHtmlCharset(HttpResponse httpResponse, byte[] contentBytes) throws IOException {
 //		logger.info("444 getHtmlCharset");
 		return super.getHtmlCharset(httpResponse, contentBytes);
@@ -98,6 +100,13 @@ public class MyCacheDownload extends HttpClientDownloader {
 	public Page getLocalPage(String localPath, Request request) throws IOException {
 		Page page = new Page();
 		String rawText = FileUtil.readAbsolutlyFile(localPath);
+		if (rawText.length()<pageMinLength ) {
+			if ( StringUtils.isNotBlank(filterRegex) && rawText.matches(filterRegex) ) {
+				return null;
+			}
+		}
+		 
+		
 		page.setRawText(rawText);
 		page.setRequest(request);
 		page.setUrl(new PlainText(request.getUrl()));
@@ -105,9 +114,19 @@ public class MyCacheDownload extends HttpClientDownloader {
 	}
 
 	public void saveLocalPage(Page page , String localPath) {
-		if (page!=null && StringUtils.isEmpty(page.getRawText())) {
+		if (page==null  ) {
 			return;
 		}
+		String rawText =page.getRawText();
+		if (StringUtils.isEmpty(rawText)){
+			return;
+		}
+		if (rawText.length()<pageMinLength ){
+			if(StringUtils.isNotBlank(filterRegex) && rawText.matches(filterRegex) ) {
+				return;
+			}
+		}
+		
 		File file = new File(localPath);
 		File parentDir = file.getParentFile();
 		if (!parentDir.exists()) {
@@ -134,22 +153,26 @@ public class MyCacheDownload extends HttpClientDownloader {
 			logger.info("文件不存在或者过期exists:"+file.exists());
 			needUpdate = true;
 		}
-
-		if (needUpdate) { // 需要更新辅助页面
-//			logger.info("更新页面:" + url);
-			page = super.download(request, task);
-			if (page!=null) {
-				saveLocalPage(page, localPath);// 保存页面
-			}
-		} else { // 直接取缓存页
+		
+		if (!needUpdate) { // 直接取缓存页
 			logger.info("本地页面:" + url + "," + localPath);
 			try {
 				page = getLocalPage(localPath, request);
+				if (page==null) {
+					logger.info("本地没取到!页面内容太少,或者被封");
+					needUpdate=true;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error("取本地数据失败:" + e);
 			}
 		}
+
+		if (needUpdate) { // 需要更新辅助页面
+//			logger.info("更新页面:" + url);
+			page = super.download(request, task);
+			saveLocalPage(page, localPath);// 保存页面
+		} 
 		// logger.info("page:"+page);
 		return page;
 	}
@@ -166,4 +189,10 @@ public class MyCacheDownload extends HttpClientDownloader {
 		return super.handleResponse(request, charset, httpResponse, task);
 	}
 
+	public void setPageMinLength(int pageMinLength) {
+		this.pageMinLength = pageMinLength;
+	}
+	public void setFilterRegex(String filterRegex) {
+		this.filterRegex = filterRegex;
+	}
 }
