@@ -101,7 +101,7 @@ public class MyCacheDownload extends HttpClientDownloader {
 		Page page = new Page();
 		String rawText = FileUtil.readAbsolutlyFile(localPath);
 		if (rawText.length()<pageMinLength ) {
-			if ( StringUtils.isNotBlank(filterRegex) && rawText.matches(filterRegex) ) {
+			if ( StringUtils.isNotBlank(filterRegex) && rawText.contains(filterRegex) ) {
 				return null;
 			}
 		}
